@@ -1,0 +1,1 @@
+export const DOMAIN_NAME = "https://learn.zone01oujda.ma";
