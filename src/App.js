@@ -1,11 +1,15 @@
+import { profile } from "./pages/ProfilePage.js";
+import { loginCompenent } from "./utils/auth.js";
 import { DOMAIN_NAME } from "./utils/helpers.js";
-let isLogged = false
 
-export function init() {
-    let tocken = localStorage.getItem("tocken")
-    checkIntgrity(tocken)
-}
+// let hasIntegrity = false;
+
+
+const container = document.getElementById('containerID');
+
+
 function checkIntgrity(tocken) {
+    console.log("checker")
     let query = `
     {
   user {
@@ -22,16 +26,30 @@ function checkIntgrity(tocken) {
     }).then(res => res.json())
         .then(data => {
             if (data.errors) throw data.errors[0]
-            console.log(data)
             if ( data.data.user.length > 0 && data.data.user[0].id) {
-                document.getElementById('login-error').style.display = 'none';
-                document.querySelector('.login-form').style.display = 'none';
-                document.querySelector('.profile-section').style.display = 'block';
-                document.querySelector('.stats-section').style.display = 'block';
-                document.querySelector('.logout-btn').style.display = 'block'
+                NavigateTo("Profile")
             }
-
         }).catch(err=>{
+            NavigateTo("login")
             console.log(err.message)
         })
 }
+
+export function NavigateTo(page) {
+
+    switch (page) {
+        case "login":
+            container.innerHTML = '';
+            loginCompenent()
+            break;
+        case "Profile":
+            container.innerHTML = '';
+            profile()
+            break;
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    let tocken = localStorage.getItem("tocken")
+    checkIntgrity(tocken); 
+});

@@ -39,7 +39,8 @@ body.dark-mode .container {
   background-color: #34495e;
 }
 
-h1, h2 {
+h1,
+h2 {
   text-align: center;
   color: var(--primary-color);
 }
@@ -103,7 +104,7 @@ body.dark-mode h2 {
 /* Profile Section */
 .profile-section {
   text-align: center;
-  display: none;
+  /* display: block; */
 }
 
 .profile-info {
@@ -139,7 +140,7 @@ body.dark-mode .profile-info div {
 /* Statistics Section */
 .stats-section {
   text-align: center;
-  display: none;
+  display: block;
 }
 
 .graph {
@@ -158,8 +159,7 @@ body.dark-mode .profile-info div {
   padding: 20px;
   transition: background-color 0.3s ease;
   width: 100%;
-  height: auto;
-  max-width: 600px;
+  max-width: 700px;
 }
 
 body.dark-mode .graph svg {
@@ -206,7 +206,11 @@ body.dark-mode .graph svg {
 .theme-toggle:hover {
   background-color: #2980b9;
 }
-
+.skill-label {
+  font-size: 12px;
+  text-anchor: middle;
+  fill: black; /* Ensure labels are visible */
+}
 /* Responsive Design */
 @media (max-width: 900px) {
   .profile-info {

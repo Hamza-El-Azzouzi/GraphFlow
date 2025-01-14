@@ -1,0 +1,33 @@
+# Basic User Information
+ export query GetUserInfo {
+  user {
+    id
+    login
+    email
+  }
+}
+
+# XP Amount
+query GetXP {
+  transaction(where: { type: { _eq: "xp" } }) {
+    amount
+    createdAt
+  }
+}
+
+# Grades
+query GetGrades {
+  progress {
+    grade
+    objectId
+    createdAt
+  }
+}
+
+# Audits
+query GetAudits {
+  transaction(where: { type: { _eq: "audit" } }) {
+    amount
+    createdAt
+  }
+}
