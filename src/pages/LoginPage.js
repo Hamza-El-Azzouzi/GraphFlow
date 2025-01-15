@@ -1,4 +1,4 @@
-import { checkIntgrity } from "../App.js";
+import { NavigateTo } from "../App.js";
 import { DOMAIN_NAME } from "../utils/helpers.js";
 
 export function loginCompenent() {
@@ -54,7 +54,7 @@ export function loginCompenent() {
                 
                 if (data.error) throw data.error
                 localStorage.setItem("tocken", data)
-                checkIntgrity(data)
+                  NavigateTo("Profile")
             })
             .catch(err => {
                 console.log(err)

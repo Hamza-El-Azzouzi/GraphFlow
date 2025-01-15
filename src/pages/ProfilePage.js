@@ -1,15 +1,15 @@
-// import { NavigateTo } from "../App.js";
+import { NavigateTo } from "../App.js";
 import { DOMAIN_NAME } from "../utils/helpers.js";
-import { extractSkills, overTimeXp} from "../utils/chart.js";
-import { loginCompenent } from "./LoginPage.js";
-let xpData = {}
-let totatXpAmount = 0
-let ratioUp = 0
-let ratioDown = 0
-let projectDone = 0
-let xpOverTime = {}
+import { extractSkills, overTimeXp } from "../utils/chart.js";
 
-export function profile(userID) {
+
+export function profile() {
+    let xpData = {}
+    let totatXpAmount = 0
+    let ratioUp = 0
+    let ratioDown = 0
+    let projectDone = 0
+    let xpOverTime = {}
     let tocken = localStorage.getItem("tocken")
     const container = document.getElementById('containerID');
     const login = document.querySelector(".login-form")
@@ -69,8 +69,22 @@ export function profile(userID) {
     profileInfo.appendChild(projectsCompleted);
 
     const skills = document.createElement('div');
-    skills.innerHTML = '<strong>Skills</strong> <span id="skills">JavaScript, GraphQL, SVG</span>';
-    profileInfo.appendChild(skills);
+    skills.innerHTML = '<strong>Level</strong> <span id="skills">0</span>';
+    profileInfo.appendChild(skills)
+    const levelquery = `{
+        transaction_aggregate(where:{
+            type: { _eq: "level" } 
+            event : {object :{name:{_eq:"Module"}}}
+            }
+        order_by: { createdAt: desc }){
+		aggregate {
+            max {
+                amount
+            }
+        }
+        }
+    }
+`;
     let xpQuery = `
     {
         transaction{
@@ -86,6 +100,23 @@ export function profile(userID) {
         }
     }    
     `
+    fetch(DOMAIN_NAME + "/api/graphql-engine/v1/graphql", {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${tocken}`
+        },
+        body: JSON.stringify({ query: levelquery })
+    }).then(res => {
+        return res.json()
+    })
+        .then(data => {
+            if (data.error) throw data.error
+            document.getElementById("skills").textContent = data.data.transaction_aggregate.aggregate.max.amount
+
+        })
+        .catch(err => {
+            console.error(err)
+        })
 
     fetch(DOMAIN_NAME + "/api/graphql-engine/v1/graphql", {
         method: "POST",
@@ -134,10 +165,5 @@ export function profile(userID) {
 }
 function logout() {
     localStorage.removeItem("tocken")
-    loginCompenent()
-    xpData = {}
-    totatXpAmount = 0
-    ratioUp = 0
-    ratioDown = 0
-    projectDone = 0
+    NavigateTo("login")
 }

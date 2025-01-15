@@ -24,25 +24,24 @@ export function checkIntgrity(tocken) {
         .then(data => {
             if (data.errors) throw data.errors[0]
             if ( data.data.user.length > 0 && data.data.user[0].id) {
-                profile(data.data.user[0].id)
-                // NavigateTo("Profile")
+                NavigateTo("Profile")
             }
         }).catch(loginCompenent())
 }
 
-// export function NavigateTo(page) {
+export function NavigateTo(page) {
 
-//     switch (page) {
-//         case "login":
-//             container.innerHTML = '';
-//             loginCompenent()
-//             break;
-//         case "Profile":
-//             container.innerHTML = '';
-//             profile()
-//             break;
-//     }
-// }
+    switch (page) {
+        case "login":
+            container.innerHTML = '';
+            loginCompenent()
+            break;
+        case "Profile":
+            container.innerHTML = '';
+            profile()
+            break;
+    }
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     let tocken = localStorage.getItem("tocken")
