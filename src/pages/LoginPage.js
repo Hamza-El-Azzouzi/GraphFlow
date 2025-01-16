@@ -1,4 +1,4 @@
-import { NavigateTo } from "../App.js";
+import { NavigateTo } from "../app.js";
 import { DOMAIN_NAME } from "../utils/helpers.js";
 
 export function loginCompenent() {
