@@ -1,11 +1,8 @@
+"use strict";
 import { profile } from "./pages/ProfilePage.js";
 import { loginCompenent } from "./pages/LoginPage.js";
 import { DOMAIN_NAME } from "./utils/helpers.js";
-
-
-
 const container = document.getElementById('containerID');
-
 
 export function checkIntgrity(tocken) {
     let query = `
