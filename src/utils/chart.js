@@ -15,17 +15,16 @@ export function overTimeXp(data) {
 
     const svgWidth = 800;
     const svgHeight = 400;
-    const padding = 80;
+    const padding = 90;
 
     const minDate = processedData[0].date;
     const maxDate = processedData[processedData.length - 1].date;
-    const minXP = Math.min(...processedData.map((d) => d.xp));
-    const maxXP = Math.max(...processedData.map((d) => d.xp));
+    const minXP =  processedData[0].xp;
+    const maxXP = processedData[processedData.length - 1].xp;
 
     const totalWidth = svgWidth - 2 * padding;
-    const spacing = totalWidth / (processedData.length - 1);
     const normalizedData = processedData.map((d) => ({
-        x: ((d.date - minDate) / (maxDate - minDate)) * (svgWidth - 2 * padding) + padding,
+        x: ((d.date - minDate) / (maxDate - minDate)) * (totalWidth) + padding,
         y: svgHeight - ((d.xp - minXP) / (maxXP - minXP)) * (svgHeight - 2 * padding) - padding,
     }));
 
@@ -34,7 +33,7 @@ export function overTimeXp(data) {
     svg.setAttribute("viewBox", `0 0 ${svgWidth} ${svgHeight}`);
     svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
     svg.setAttribute("width", "100%");
-    // svg.setAttribute("height", "auto");
+
 
     const points = normalizedData.map((d) => `${d.x},${d.y}`).join(" ");
     const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
@@ -74,19 +73,7 @@ export function overTimeXp(data) {
     yAxis.setAttribute("stroke-width", "2");
     svg.appendChild(yAxis);
 
-    processedData.forEach((d, i) => {
-        if (i % Math.ceil(processedData.length / 5) === 0) {
-            const x = normalizedData[i].x;
-            const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            label.setAttribute("x", x);
-            label.setAttribute("y", svgHeight - padding + 30);
-            label.setAttribute("text-anchor", "middle");
-            label.setAttribute("font-size", "12");
-            svg.appendChild(label);
-        }
-    });
-
-    const yTicks = 10;
+    const yTicks = 5;
     for (let i = 0; i <= yTicks; i++) {
         const y = svgHeight - padding - (i * (svgHeight - 2 * padding)) / yTicks;
         const xpValue = minXP + (i * (maxXP - minXP)) / yTicks;
@@ -96,7 +83,7 @@ export function overTimeXp(data) {
         label.setAttribute("y", y + 5);
         label.setAttribute("text-anchor", "end");
         label.setAttribute("font-size", "12");
-        label.textContent = `${xpValue.toFixed(1)}k`;
+        label.textContent = `${xpValue.toFixed(1)}kb`;
         svg.appendChild(label);
 
         const gridLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -121,39 +108,34 @@ const formatDate = (date) => {
 export function logout() {
     localStorage.removeItem("tocken")
     NavigateTo("login")
-    xpData = {}
-    totatXpAmount = 0
-    ratioUp = 0
-    ratioDown = 0
-    projectDone = 0
 }
 
 export function extractSkills(data) {
-    const maxXpPerSkill = {};
+    const maxAmounPerSkill = {};
     const sectionStat = document.querySelector(".stats-section");
 
     data.data.transaction.forEach((transaction) => {
         if (transaction.type.startsWith("skill_")) {
             const skillName = transaction.type;
-            const xpAmount = transaction.amount; 
+            const Amount = transaction.amount; 
 
-            if (maxXpPerSkill[skillName]) {
-                if (xpAmount > maxXpPerSkill[skillName]) {
-                    maxXpPerSkill[skillName] = xpAmount;
+            if (maxAmounPerSkill[skillName]) {
+                if (Amount > maxAmounPerSkill[skillName]) {
+                    maxAmounPerSkill[skillName] = Amount;
                 }
             } else {
-                maxXpPerSkill[skillName] = xpAmount;
+                maxAmounPerSkill[skillName] = Amount;
             }
         }
     });
 
 
-    if (Object.keys(maxXpPerSkill).length === 0) {
+    if (Object.keys(maxAmounPerSkill).length === 0) {
         console.error("No skills found in the data.");
         return;
     }
 
-    const { technologies, technicalSkills } = categorizeSkills(maxXpPerSkill);
+    const { technologies, technicalSkills } = categorizeSkills(maxAmounPerSkill);
 
 
     const techContainer = document.createElement("div");
@@ -197,27 +179,27 @@ export function generateBarChart(data, container, title) {
     tooltip.setAttribute("visibility", "hidden");
     tooltip.setAttribute("text-anchor", "middle");
     svg.appendChild(tooltip);
-    const maxXp = Math.max(...Object.values(data));
+    const maxAmount = Math.max(...Object.values(data));
 
     const barWidth = width / Object.keys(data).length;
-    const barHeightScale = height / maxXp;
+    const barHeightScale = height / maxAmount;
 
-    Object.entries(data).forEach(([skill, xp], index) => {
+    Object.entries(data).forEach(([skill, amount], index) => {
         const barX = margin.left + index * barWidth;
-        const barY = height + margin.top - xp * barHeightScale;
-        const barHeight = xp * barHeightScale;
+        const barY = height + margin.top - amount * barHeightScale;
+        const barHeight = amount * barHeightScale;
 
         const rect = document.createElementNS(svgNS, "rect");
         rect.setAttribute("x", barX);
         rect.setAttribute("y", barY);
-        rect.setAttribute("width", barWidth - 5); // Adjust for spacing between bars
+        rect.setAttribute("width", barWidth - 10)
         rect.setAttribute("height", barHeight);
         rect.setAttribute("fill", colors[index % colors.length]);
         rect.addEventListener("mouseenter", () => {
             tooltip.setAttribute("x", barX + (barWidth - 5) / 2);
-            tooltip.setAttribute("y", barY - 5); // Position tooltip above the bar
+            tooltip.setAttribute("y", barY - 10);
             tooltip.setAttribute("visibility", "visible");
-            tooltip.textContent = `${xp} %`;
+            tooltip.textContent = `${amount} %`;
         });
         svg.appendChild(rect);
 
@@ -238,7 +220,7 @@ function categorizeSkills(skills) {
     const technicalSkills = {};
 
     const techKeywords = [
-        "go", "mongodb", "js", "python", "java", "docker", "c",
+        "go", "js", "python", "java", "docker", "c",
         "unix", "html", "css", "sql", "git", "graphql", "cpp"
     ];
     for (const [skill, xp] of Object.entries(skills)) {

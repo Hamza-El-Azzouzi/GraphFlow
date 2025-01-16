@@ -51,7 +51,6 @@ export function loginCompenent() {
             return res.json()
         })
             .then(data => {
-                
                 if (data.error) throw data.error
                 localStorage.setItem("tocken", data)
                   NavigateTo("Profile")

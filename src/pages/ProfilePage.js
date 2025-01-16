@@ -24,7 +24,6 @@ export function profile() {
     profileHeader.textContent = 'Welcome, ';
     const profileName = document.createElement('span');
     profileName.id = 'profile-name';
-    profileName.textContent = 'John Doe';
     profileHeader.appendChild(profileName);
     profileSection.appendChild(profileHeader);
     let query = `
@@ -69,7 +68,7 @@ export function profile() {
     profileInfo.appendChild(projectsCompleted);
 
     const skills = document.createElement('div');
-    skills.innerHTML = '<strong>Level</strong> <span id="skills">0</span>';
+    skills.innerHTML = '<strong>Level</strong> <span id="skills"></span>';
     profileInfo.appendChild(skills)
     const levelquery = `{
         transaction_aggregate(where:{
