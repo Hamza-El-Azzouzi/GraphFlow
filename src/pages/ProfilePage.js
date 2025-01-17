@@ -137,7 +137,7 @@ export function profile() {
             overTimeXp(xpOverTime)
             extractSkills(data)
             document.getElementById("total-xp").textContent = totatXpAmount / 1000 + (totatXpAmount / 1000 > 1000 ? " MB" : " KB")
-            document.getElementById("audit-ratio").textContent = Math.ceil((ratioUp / ratioDown) * 10) / 10
+            document.getElementById("audit-ratio").textContent = Math.round((ratioUp / ratioDown) * 10) / 10
             document.getElementById("projects-completed").textContent = projectDone
 
         })

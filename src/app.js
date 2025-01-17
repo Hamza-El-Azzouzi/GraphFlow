@@ -1,4 +1,3 @@
-"use strict";
 import { profile } from "./pages/ProfilePage.js";
 import { loginCompenent } from "./pages/LoginPage.js";
 import { DOMAIN_NAME } from "./utils/helpers.js";
@@ -42,5 +41,5 @@ export function NavigateTo(page) {
 
 document.addEventListener("DOMContentLoaded", () => {
     let tocken = localStorage.getItem("tocken")
-    checkIntgrity(tocken); 
+   if (tocken) {checkIntgrity(tocken);}else{loginCompenent()} 
 });

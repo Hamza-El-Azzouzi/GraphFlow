@@ -105,10 +105,6 @@ const formatDate = (date) => {
     const month = date.toLocaleString("default", { month: "short" });
     return `${day} ${month}`;
 };
-export function logout() {
-    localStorage.removeItem("tocken")
-    NavigateTo("login")
-}
 
 export function extractSkills(data) {
     const maxAmounPerSkill = {};
